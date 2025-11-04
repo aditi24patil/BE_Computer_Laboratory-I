@@ -1,64 +1,63 @@
+#ML-3
 import matplotlib.pyplot as plt
-from sklearn import datasets
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.svm import SVC
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 import seaborn as sns
+from sklearn import datasets
+from sklearn.preprocessing import StandardScaler 
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score , classification_report , confusion_matrix
 
-#load the handwritten dataset
-digits = datasets.load_digits()
+digits=datasets.load_digits()
 
-#features (pixel values) and labels (digits 0-9)
-X= digits.data
-y= digits.target
+x=digits.data
+y=digits.target
 
-print("Dataset shape:", X.shape)
-print("Number of classes:", len(set(y)))
+print("Data Shape :",x.shape)
+print("Number of classes : ",len(set(y)))
 
-#visualize a few images
-plt.figure(figsize=(8,4))
+plt.figure(figsize=(8,6))
 for i in range(8):
-  plt.subplot(2, 4, i + 1)
-  plt.imshow(digits.image[i], cmap='gray')
-  plt.title(f"Label: {digits.target[i]}")
-  plt.axis('off')
+    plt.subplot(2,4,i+1)
+    plt.imshow(digits.images[i],cmap='gray')
+    plt.title(f'Label {digits.target[i]}')
 plt.show()
+              
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=42)
 
-#Split the dataset into training and testing
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+scaler=StandardScaler()
+x_train_scaled=scaler.fit_transform(x_train)
+x_test_scaled=scaler.transform(x_test)
+              
+svm_clf=SVC(kernel='rbf',gamma=0.001,C=10)
+svm_clf.fit(x_train_scaled,y_train)
+              
+y_pred=svm_clf.predict(x_test_scaled)
 
-#Standardize the features
-scaler= StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
+acc=accuracy_score(y_pred,y_test)
+print(f"Model Accuracy : {acc*100:.2f}%\n")
+print("Classification Report :")
+print(classification_report(y_pred,y_test))
 
-#Train SVM classifier 
-svm_clf = SVC(kernel='rbf', gamma=0.001, C=10)
-svm_clf.fit(X_trained_scaled, y_train)
-
-#Evaluate model
-acc = accuracy_score(y_test, y_pred)
-print(f"Model Accuracy: {acc*100:.2f}%\n")
-
-print("Classification Report:")
-print(classification_report(y_test, y_pred))
-
-#Confusion Matrix
-cm = confusion_matrix(y_test, y_pred)
-plt.figure(figsize=(8, 6))
-sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
-plt.title('Confusion Matrix of SVM Digit Classification')
-plt.xlabel('Predicted Label')
-plt.ylabel('True Label')
-plt.show()
-
-#Visualize predictions
+#ML-3
+cm=confusion_matrix(y_pred,y_test)
+sns.heatmap(cm,annot=True,fmt='d',cmap='Blues')
+plt.title('Confusion Matrix for SVM Digital Classification')
+plt.xlabel('Predicted Values')
+plt.ylabel('Actual Values')
+              
 plt.figure(figsize=(10,4))
 for i in range(10):
-  plt.subplot(2, 5, i + 1)
-  plt.imshow(X_test[i].reshape(8, 8), cmap='gray')
-  plt.title(f"Pred: {y_pred[i]} / True: {y_test[i]}")
-  plt.axis('off')
+    plt.subplot(2,5,i+1)
+    plt.imshow(x_test[i].reshape(8,8),cmap='gray')
+    plt.title(f"Pred : {y_pred[i]} / True {y_test[i]}")
 plt.tight_layout()
 plt.show()
+
+index=int(input("Enter index from (0 to "+str(len(y_test)-1)+")to check prediction"))
+plt.imshow(x_test[index].reshape(8,8),cmap='gray')
+plt.title(f"Predicted value : {y_pred[index]}, Actual Value : {y_test[index]}")
+
+if y_pred[index]==y_test[index]:
+    print("Correct Prediction")
+else:
+    print("Wrong Prediction")
