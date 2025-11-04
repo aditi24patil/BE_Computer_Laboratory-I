@@ -19,7 +19,7 @@ print("Number of classes:", len(set(y)))
 #visualize a few images
 plt.figure(figsize=(8,4))
 for i in range(8):
-  plt.subplot(2, 4, i + 1))
+  plt.subplot(2, 4, i + 1)
   plt.imshow(digits.image[i], cmap='gray')
   plt.title(f"Label: {digits.target[i]}")
   plt.axis('off')
