@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 #Load the excel file
-excel_data=pd.read_excel("C:/Users/User 58/Desktop/SALES_DATA.xlsx")
+excel_data=pd.read_excel("SALES_DATA.xlsx")
 #convert excel file into csv and json files
 excel_data.to_csv("SALES_DATA.csv", index=False)
 excel_data.to_json("SALES_DATA.json", orient='records', indent=4)
